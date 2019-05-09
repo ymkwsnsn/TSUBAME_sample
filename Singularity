@@ -20,7 +20,7 @@ Include: yum
     echo "Installing OFED Infiniband Support"
     yum -y install libibverbs-devel
     yum -y install infiniband-diags perftest qperf opensm
-    yum –y install numactl-libs hwloc-libs libfabric libibverbs infinipath-psm
+    yum -y install numactl-libs hwloc-libs libfabric libibverbs infinipath-psm
     yum -y groupinstall "Infiniband Support"
     echo "Installing OpenMPI into container..."
     yum -y install wget
