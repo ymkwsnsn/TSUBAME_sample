@@ -12,12 +12,17 @@ Include: yum
 %labels
 
 %environment
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
 
 %post
     echo "Installing Development Tools YUM group"
     yum -y groupinstall "Development Tools"
+    echo "Installing OFED Infiniband Support"
+    yum -y install libibverbs-devel
+    yum -y install infiniband-diags perftest qperf opensm
+    yum install –y numactl-libs hwloc-libs libfabric libibverbs infinipath-psm
+    yum -y groupinstall "Infiniband Support"
     echo "Installing OpenMPI into container..."
-    yum -y install numactl-libs hwloc-libs libfabric libibverbs infinipath-psm
     yum -y install wget
     OPENMPI_VERSION=2.1.2
     OPENMPI_NAME=openmpi-${OPENMPI_VERSION}
@@ -31,12 +36,13 @@ Include: yum
 
 #osu bench
     OSU_VERSION=5.5
-    wget http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-${OSU_VERSION}.tar.gz
-    tar -xvf osu-micro-benchmarks-${OSU_VERSION}.tar.gz
-    cd osu-micro-benchmarks-${OSU_VERSION}
+    OSU_NAME=osu-micro-benchmarks-${OSU_VERSION}
+    wget http://mvapich.cse.ohio-state.edu/download/mvapich/${OSU_NAME}.tar.gz
+    tar -xvf ${OSU_NAME}.tar.gz
+    cd ${OSU_NAME}
     ./configure --prefix=/usr/local CC=/usr/local/bin/mpicc CXX=/usr/local/bin/mpicxx
     make
     make install
 
 %runscript
-    /usr/local/libexec/osu-micro-benchmarks/mpi/pt2pt/osu_bw 
+/usr/local/libexec/osu-micro-benchmarks/mpi/pt2pt/osu_bw
